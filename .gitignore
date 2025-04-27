@@ -4,6 +4,9 @@ yarn-debug.log
 pnpm-debug.log
 package-lock.json
 
+backend/src/config/config.js
+frontend/src/config/config.js
+
 /build
 /public/build
 coverage/
@@ -13,9 +16,6 @@ docker/postgres/data
 
 .vscode/
 .DS_Store
-
-*.dump
-*.sql
 
 dump.rdb
 *.rdb
