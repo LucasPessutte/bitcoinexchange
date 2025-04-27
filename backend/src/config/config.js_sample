@@ -14,16 +14,15 @@ const config = {
     port: '5432',
     host: 'platform_postgres',
     logging: false,
+    dialect: 'postgres'
   },
 
   endpoints: {
-    backend: 'http://localhost/',            // Endpoint do backend
-    redis: 'redis://platform_redis:6379' // Conexão com Redis
+    backend: 'http://localhost/',
+    redis: 'redis://platform_redis:6379'
   },
 
-  gmaps_key: '', // Se precisar usar Google Maps API
-
-  express_port: 3000, // Porta do servidor Express
+  express_port: 3000,
 
   // Importações de config core e app
   ...configApp
