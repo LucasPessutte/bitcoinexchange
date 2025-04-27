@@ -1,0 +1,34 @@
+// src/config/config.js_sample
+
+import configApp from './config-app.js';
+
+const config = {
+  paths: {
+    application: '/platform_backend/',
+  },
+
+  database: {
+    database: 'local_platform',
+    user: 'postgres',
+    password: 'docker',
+    port: '5432',
+    host: 'platform_postgres',
+    logging: false,
+    dialect: 'postgres'
+  },
+
+  endpoints: {
+    backend: 'http://localhost/',            // Endpoint do backend
+    redis: 'redis://platform_redis:6379' // Conexão com Redis
+  },
+
+  gmaps_key: '', // Se precisar usar Google Maps API
+
+  express_port: 3000, // Porta do servidor Express
+
+  // Importações de config core e app
+  ...configApp
+
+};
+
+export default config;
