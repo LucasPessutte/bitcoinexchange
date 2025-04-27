@@ -65,3 +65,12 @@ http://localhost:3000
 
 # To uninstall
 docker-compose down
+
+**Important:**  
+The project includes a PostgreSQL `.dump` file to automate database creation.  
+If needed, you can manually generate a `.sql` structure using `pg_dump` with the `--schema-only` flag.
+
+Example to manually generate a `.sql`:
+```bash
+docker exec -it platform_postgres bash
+pg_dump -U postgres --schema-only local_platform > /database/database_structure.sql
