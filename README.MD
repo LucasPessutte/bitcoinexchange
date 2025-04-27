@@ -3,7 +3,7 @@
 This project is a Bitcoin exchange simulation platform, featuring a buy and sell order system, WebSocket integration, and data persistence using PostgreSQL.
 ---
 
-## 📚 Tecnologias utilizadas
+## 📚 Technologies used
 
 - **Node.js 16** → (Backend Express)
 - **PostgreSQL 13** → (Database)
@@ -14,7 +14,7 @@ This project is a Bitcoin exchange simulation platform, featuring a buy and sell
 
 ---
 
-## 🧩 Estrutura de Pastas
+## 🧩 Folder Structure
 
 - **backend/** → Backend code (Node.js + Express + Sequelize)
 - **frontend/** → Frontend code (React)
@@ -24,7 +24,7 @@ This project is a Bitcoin exchange simulation platform, featuring a buy and sell
 
 ---
 
-# ✅ Pré-requisitos
+# ✅ Prerequisites
 
 - Docker installed
 - Docker Compose installed
