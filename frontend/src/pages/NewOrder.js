@@ -1,12 +1,31 @@
-import Swal from 'sweetalert2';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../api/api.js';
+import Swal from 'sweetalert2';
 
 function NewOrder() {
+  const location = useLocation();
+  const { state } = location || {};
+
   const [buyAmount, setBuyAmount] = useState('');
   const [buyPrice, setBuyPrice] = useState('');
   const [sellAmount, setSellAmount] = useState('');
   const [sellPrice, setSellPrice] = useState('');
+  const [activeTab, setActiveTab] = useState('buy');
+
+  useEffect(() => {
+    if (state) {
+      if (state.type === 'buy') {
+        setActiveTab('buy');
+        setBuyPrice(state.price || '');
+        setBuyAmount(state.amount || '');
+      } else if (state.type === 'sell') {
+        setActiveTab('sell');
+        setSellPrice(state.price || '');
+        setSellAmount(state.amount || '');
+      }
+    }
+  }, [state]);
 
   const handleBuy = async (e) => {
     e.preventDefault();
@@ -16,24 +35,12 @@ function NewOrder() {
         amount: parseFloat(buyAmount),
         price: parseFloat(buyPrice),
       });
-
-      Swal.fire({
-        title: 'Purchase Order',
-        text: 'Purchase order submitted successfully!',
-        icon: 'success',
-        confirmButtonText: 'OK',
-      });
-
+      Swal.fire('Success', 'Buy order created successfully!', 'success');
       setBuyAmount('');
       setBuyPrice('');
     } catch (error) {
-      console.error('Error sending purchase order:', error);
-      Swal.fire({
-        title: 'Error',
-        text: error.response?.data?.message || 'Failed to submit purchase order.',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
+      Swal.fire('Error', 'Failed to create buy order.', 'error');
+      console.error('Error sending buy order:', error);
     }
   };
 
@@ -45,38 +52,26 @@ function NewOrder() {
         amount: parseFloat(sellAmount),
         price: parseFloat(sellPrice),
       });
-
-      Swal.fire({
-        title: 'Sell Order',
-        text: 'Sell order submitted successfully!',
-        icon: 'success',
-        confirmButtonText: 'OK',
-      });
-
+      Swal.fire('Success', 'Sell order created successfully!', 'success');
       setSellAmount('');
       setSellPrice('');
     } catch (error) {
+      Swal.fire('Error', 'Failed to create sell order.', 'error');
       console.error('Error sending sell order:', error);
-      Swal.fire({
-        title: 'Error',
-        text: error.response?.data?.message || 'Failed to submit sell order.',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
     }
   };
 
   return (
     <div className="container mt-5">
-      <h1>Nova Ordem</h1>
+      <h1>New Order</h1>
 
       <div className="row mt-4">
         <div className="col-md-6">
           <div className="card p-4">
-            <h3>Comprar BTC</h3>
+            <h3>Buy BTC</h3>
             <form onSubmit={handleBuy}>
               <div className="form-group mb-2">
-                <label>Quantidade (BTC)</label>
+                <label>Amount (BTC)</label>
                 <input
                   type="number"
                   step="0.0001"
@@ -87,7 +82,7 @@ function NewOrder() {
                 />
               </div>
               <div className="form-group mb-2">
-                <label>Preço (USD)</label>
+                <label>Price (USD)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -106,17 +101,17 @@ function NewOrder() {
                   disabled
                 />
               </div>
-              <button type="submit" className="btn btn-success w-100">Enviar Ordem de Compra</button>
+              <button type="submit" className="btn btn-success w-100">Send Buy Order</button>
             </form>
           </div>
         </div>
 
         <div className="col-md-6">
           <div className="card p-4">
-            <h3>Vender BTC</h3>
+            <h3>Sell BTC</h3>
             <form onSubmit={handleSell}>
               <div className="form-group mb-2">
-                <label>Quantidade (BTC)</label>
+                <label>Amount (BTC)</label>
                 <input
                   type="number"
                   step="0.0001"
@@ -127,7 +122,7 @@ function NewOrder() {
                 />
               </div>
               <div className="form-group mb-2">
-                <label>Preço (USD)</label>
+                <label>Price (USD)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -146,7 +141,7 @@ function NewOrder() {
                   disabled
                 />
               </div>
-              <button type="submit" className="btn btn-danger w-100">Enviar Ordem de Venda</button>
+              <button type="submit" className="btn btn-danger w-100">Send Sell Order</button>
             </form>
           </div>
         </div>

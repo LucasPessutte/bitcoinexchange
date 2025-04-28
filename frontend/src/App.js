@@ -5,6 +5,8 @@ import NewOrder from './pages/NewOrder.js';
 import MyActiveOrders from './pages/MyActiveOrders.js';
 import ProtectedLayout from './layouts/ProtectedLayout.js';
 import PrivateRoute from './components/PrivateRoute.js';
+import MyHistory from './pages/MyHistory.js';
+import OrderBook from './pages/OrderBook.js';
 
 function App() {
   return (
@@ -28,6 +30,19 @@ function App() {
             </ProtectedLayout>
             } 
           />
+          <Route path="/my-history" element={
+            <ProtectedLayout >
+              <MyHistory />
+            </ProtectedLayout>
+            } 
+          />
+          <Route path="/orderbook" element={
+            <ProtectedLayout>
+              <OrderBook />
+            </ProtectedLayout>
+            } 
+          />
+
         </Route>
 
       </Routes>

@@ -1,14 +1,13 @@
-// src/routes/orderRoutes.js
 import { Router } from 'express';
 import { authenticate } from '../middlewares/authMiddlewares.js';
-import { buyOrder, sellOrder, cancelOrder, getActivesOrders } from '../controllers/orderController.js';
+import { buyOrder, sellOrder, cancelOrder, getActivesOrders, getOrderBook } from '../controllers/orderController.js';
 
 const router = Router();
 
-// Rotas de ordens protegidas por autenticação
-router.post('/buy', authenticate, buyOrder);    // Comprar BTC usando USD
+router.post('/buy', authenticate, buyOrder);
 router.get('/active', authenticate, getActivesOrders);
-router.post('/sell', authenticate, sellOrder);  // Vender BTC para receber USD
-router.delete('/cancel/:id', authenticate, cancelOrder); // Cancelar uma ordem ativa
+router.get('/orderbook', authenticate, getOrderBook);
+router.post('/sell', authenticate, sellOrder);
+router.delete('/cancel/:id', authenticate, cancelOrder);
 
 export default router;

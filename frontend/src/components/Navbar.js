@@ -23,6 +23,13 @@ function Navbar() {
           <Link className="btn btn-outline-light me-2" to="/active-orders">
             My Active Orders
           </Link>
+          <Link className="btn btn-outline-light me-2" to="/my-history">
+            My History
+          </Link>
+          <Link className="btn btn-outline-light me-2" to="/orderbook">
+            Order Book
+          </Link>
+
           <button className="btn btn-outline-danger" onClick={handleLogout}>
             Logout
           </button>

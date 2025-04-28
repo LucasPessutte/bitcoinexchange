@@ -14,3 +14,24 @@ export const getRecentTrades = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getMyTradeHistory = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const trades = await db.Trade.findAll({
+      where: {
+        [db.Sequelize.Op.or]: [
+          { buyer_id: userId },
+          { seller_id: userId }
+        ]
+      },
+      order: [['createdAt', 'DESC']]
+    });
+
+    return res.json(trades);
+  } catch (error) {
+    next(error);
+  }
+};
+

@@ -2,7 +2,7 @@
 import { addOrderToQueue } from '../services/queueService.js';
 import db from '../models/index.js';
 import { getSocket } from '../services/socket.js';
-import jwt from 'jsonwebtoken'; 
+import { Sequelize } from 'sequelize';
 
 const OrderModel = db.Order;
 const UserModel = db.User;
@@ -132,6 +132,34 @@ export const getActivesOrders = async (req, res, next) => {
     });
 
     return res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrderBook = async (req, res, next) => {
+  try {
+    const bids = await OrderModel.findAll({
+      where: { status: 'open', type: 'buy' },
+      attributes: [
+        'price',
+        [Sequelize.fn('SUM', Sequelize.col('amount')), 'totalAmount']
+      ],
+      group: ['price'],
+      order: [['price', 'DESC']]
+    });
+
+    const asks = await OrderModel.findAll({
+      where: { status: 'open', type: 'sell' },
+      attributes: [
+        'price',
+        [Sequelize.fn('SUM', Sequelize.col('amount')), 'totalAmount']
+      ],
+      group: ['price'],
+      order: [['price', 'ASC']]
+    });
+
+    return res.json({ bids, asks });
   } catch (error) {
     next(error);
   }
