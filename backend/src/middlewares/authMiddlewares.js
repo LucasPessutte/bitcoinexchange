@@ -1,4 +1,3 @@
-// src/middlewares/authMiddleware.js
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth.js';
 
@@ -24,7 +23,6 @@ export const authenticate = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, authConfig.secret);
 
-    // Guardar as informações do usuário no req para próximas funções usarem
     req.user = {
       id: decoded.id,
       username: decoded.username,

@@ -1,7 +1,5 @@
-// src/services/queueService.js
 import redis from '../config/redis.js';
 
-// Nome da fila no Redis
 const ORDER_QUEUE_KEY = 'order-queue';
 
 export const addOrderToQueue = async (order) => {

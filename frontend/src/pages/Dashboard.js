@@ -114,7 +114,7 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Tabela Global Matches */}
+      {/* Table Global Matches */}
       <h2 className="mt-5">Global Matches</h2>
       <table className="table table-striped table-hover">
         <thead>

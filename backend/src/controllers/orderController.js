@@ -1,4 +1,3 @@
-// src/controllers/orderController.js
 import { addOrderToQueue } from '../services/queueService.js';
 import db from '../models/index.js';
 import { getSocket } from '../services/socket.js';

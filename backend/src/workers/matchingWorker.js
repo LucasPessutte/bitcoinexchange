@@ -1,4 +1,3 @@
-// src/workers/matchingWorker.js
 import { getNextOrderFromQueue } from '../services/queueService.js';
 import sequelize from '../config/database.js';
 import db from '../models/index.js';
@@ -9,7 +8,6 @@ const UserModel = db.User;
 const OrderModel = db.Order;
 const TradeModel = db.Trade;
 
-// Função para processar a fila de ordens
 export async function processOrder(orderData) {
   const t = await sequelize.transaction();
 

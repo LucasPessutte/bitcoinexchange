@@ -1,11 +1,9 @@
-// src/controllers/authController.js
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth.js';
 import db from '../models/index.js';
 
 const UserModel = db.User;
 
-// Função para gerar o token JWT
 function generateToken(user) {
   return jwt.sign(
     { id: user.id, username: user.username },
@@ -14,7 +12,6 @@ function generateToken(user) {
   );
 }
 
-// Controller principal: login (e cadastro automático se não existir)
 export const login = async (req, res, next) => {
   try {
     const { username } = req.body;
@@ -26,7 +23,6 @@ export const login = async (req, res, next) => {
     let user = await UserModel.findOne({ where: { username } });
 
     if (!user) {
-      // Cria o usuário com saldo inicial se não existir
       user = await UserModel.create({ username, usd_balance: 100000, btc_balance: 100 });
     }
 

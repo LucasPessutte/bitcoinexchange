@@ -1,4 +1,3 @@
-// src/core/socket.js
 import { Server } from 'socket.io';
 
 let ioInstance = null;

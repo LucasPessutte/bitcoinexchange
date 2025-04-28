@@ -18,7 +18,6 @@ export default (sequelize, DataTypes) => {
       });
     }
 
-    // Método de instância para comparar senha
     async validPassword(password) {
       return bcrypt.compare(password, this.password);
     }

@@ -4,7 +4,6 @@ import { fileURLToPath } from 'url';
 import Sequelize from 'sequelize';
 import config from '../config/config.js';
 
-// Ajustes para __dirname e __filename no ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

@@ -11,6 +11,7 @@ import tradeRoutes from './routes/tradeRoutes.js';
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js';
 import { initSocket } from './services/socket.js';
 import {startMatchingWorker} from './workers/matchingWorker.js';
+import config from './config/config.js';
 
 const app = express();
 const server = createServer(app);
@@ -31,7 +32,7 @@ app.use('/api/trades', tradeRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
+const PORT = config.express_port;
 
 async function startServer() {
   try {

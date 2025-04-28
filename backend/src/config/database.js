@@ -1,5 +1,3 @@
-// src/config/database.js
-
 import { Sequelize } from 'sequelize';
 import config from './config.js';
 

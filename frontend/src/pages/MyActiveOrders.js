@@ -40,7 +40,6 @@ function MyActiveOrders() {
         icon: 'success',
         confirmButtonText: 'OK',
       });
-    //   fetchActiveOrders();
     } catch (error) {
       console.error('Error cancelling order:', error);
       Swal.fire({
