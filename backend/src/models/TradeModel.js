@@ -32,6 +32,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    createdAt: {
+        field: 'created_at',
+        type: DataTypes.DATE,
+    },
+    updatedAt: {
+        field: 'updated_at',
+        type: DataTypes.DATE,
+    }
   }, {
     sequelize,
     modelName: 'Trade',

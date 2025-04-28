@@ -1,4 +1,4 @@
 export PGPASSWORD=docker
-dropdb -f local_platform
-createdb local_platform
+dropdb -U postgres -f local_platform
+createdb -U postgres local_platform
 pg_restore -v -U postgres -h localhost -d local_platform /database/database.dump

@@ -39,6 +39,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false,
       defaultValue: 0,
+    },
+    createdAt: {
+        field: 'created_at',
+        type: DataTypes.DATE,
+    },
+    updatedAt: {
+        field: 'updated_at',
+        type: DataTypes.DATE,
     }
   }, {
     sequelize,

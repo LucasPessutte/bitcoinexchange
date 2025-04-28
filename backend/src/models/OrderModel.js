@@ -35,6 +35,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.ENUM('open', 'matched', 'cancelled'),
       defaultValue: 'open',
     },
+    createdAt: {
+        field: 'created_at',
+        type: DataTypes.DATE,
+    },
+    updatedAt: {
+        field: 'updated_at',
+        type: DataTypes.DATE,
+    }
   }, {
     sequelize,
     modelName: 'Order',
