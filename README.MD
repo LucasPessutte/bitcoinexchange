@@ -44,6 +44,9 @@ All of the below commands need to run in the docker's folder.
 3) ./install-db.sh
 4) ./install.sh
 
+> ⚠️ **Important for Windows users:**  
+> If you are using Windows, you must run the `.sh` scripts (like `install.sh` and `install-db.sh`) inside a **Git Bash** terminal to avoid compatibility issues.
+
 # Starting the backend
 
 Open a new tab on the terminal and run the command below: 
