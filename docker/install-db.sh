@@ -1,2 +1,1 @@
-docker exec -d platform_postgres bash -c "chmod +x /database/restore.sh"
-docker exec -u postgres -d platform_postgres bash -c "./database/restore.sh"
+docker exec -i platform_postgres bash -c "export PGPASSWORD=docker; dropdb -U postgres -f local_platform; createdb -U postgres local_platform; sleep 2; pg_restore -v -U postgres -h localhost -d local_platform /database/database.dump"
