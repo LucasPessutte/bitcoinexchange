@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { useState } from 'react';
 import api from '../api/api.js';
 
@@ -10,32 +11,58 @@ function NewOrder() {
   const handleBuy = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/orders', {
+      await api.post('/api/orders/buy', {
         type: 'buy',
         amount: parseFloat(buyAmount),
         price: parseFloat(buyPrice),
       });
-      alert('Ordem de compra enviada!');
+
+      Swal.fire({
+        title: 'Purchase Order',
+        text: 'Purchase order submitted successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
+
       setBuyAmount('');
       setBuyPrice('');
     } catch (error) {
-      console.error('Erro ao enviar ordem de compra:', error);
+      console.error('Error sending purchase order:', error);
+      Swal.fire({
+        title: 'Error',
+        text: error.response?.data?.message || 'Failed to submit purchase order.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
   const handleSell = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/orders', {
+      await api.post('/api/orders/sell', {
         type: 'sell',
         amount: parseFloat(sellAmount),
         price: parseFloat(sellPrice),
       });
-      alert('Ordem de venda enviada!');
+
+      Swal.fire({
+        title: 'Sell Order',
+        text: 'Sell order submitted successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
+
       setSellAmount('');
       setSellPrice('');
     } catch (error) {
-      console.error('Erro ao enviar ordem de venda:', error);
+      console.error('Error sending sell order:', error);
+      Swal.fire({
+        title: 'Error',
+        text: error.response?.data?.message || 'Failed to submit sell order.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 

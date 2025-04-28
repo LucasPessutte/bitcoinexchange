@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/api.js';
+import socket from '../services/socket.js';
 
 function Dashboard() {
   const [statistics, setStatistics] = useState(null);
@@ -9,9 +10,18 @@ function Dashboard() {
   useEffect(() => {
     fetchStatistics();
     fetchTrades();
+    socket.on('statisticsUpdated', () => {
+      fetchTrades();
+      fetchStatistics();
+    });
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
+    return () => {
+      socket.off('statsUpdated');
+    };
   }, []);
+
+  
 
   const fetchStatistics = async () => {
     try {
@@ -97,7 +107,7 @@ function Dashboard() {
             <div className="card-header">Your Balances</div>
             <div className="card-body">
               <h5 className="card-title">
-                {user ? `USD: $${user.usd_balance} | BTC: ${user.btc_balance} BTC` : 'Loading...'}
+                {statistics ? `USD: $${statistics.user_usd_balance} | BTC: ${statistics.user_btc_balance} BTC` : 'Loading...'}
               </h5>
             </div>
           </div>
@@ -117,9 +127,9 @@ function Dashboard() {
         <tbody>
           {trades.map((trade) => (
             <tr key={trade.id}>
-              <td>${trade.price}</td>
-              <td>{trade.amount} BTC</td>
-              <td>{new Date(trade.created_at).toLocaleString()}</td>
+              <td>${parseFloat(trade.price).toFixed(2)}</td>
+              <td>{parseFloat(trade.amount).toFixed(4)} BTC</td>
+              <td>{new Date(trade.createdAt).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

@@ -2,7 +2,6 @@
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
 import sequelize from './config/database.js';
 import redis from './config/redis.js';
 import authRoutes from './routes/authRoutes.js';
@@ -10,16 +9,14 @@ import orderRoutes from './routes/orderRoutes.js';
 import statisticsRoutes from './routes/statisticsRoutes.js';
 import tradeRoutes from './routes/tradeRoutes.js';
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js';
+import { initSocket } from './services/socket.js';
+import {startMatchingWorker} from './workers/matchingWorker.js';
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*', // All access for development
-  }
-});
+const io = initSocket(server); 
 
-export { io };
+startMatchingWorker();
 
 // Middlewares Express
 app.use(cors());
@@ -33,18 +30,6 @@ app.use('/api/trades', tradeRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
-
-// Errors Middlewares
-app.use(errorHandler);
-
-// Socket.io Events
-io.on('connection', (socket) => {
-  console.log('🧠 Novo cliente conectado via WebSocket:', socket.id);
-
-  socket.on('disconnect', () => {
-    console.log('❌ Cliente desconectado:', socket.id);
-  });
-});
 
 const PORT = process.env.PORT || 3000;
 

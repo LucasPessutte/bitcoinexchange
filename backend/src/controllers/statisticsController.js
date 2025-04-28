@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import db from '../models/index.js';
 
 const TradeModel = db.Trade;
+const UserModel = db.User;
 
 // Função para buscar estatísticas
 export const getStatistics = async (req, res, next) => {
@@ -33,12 +34,17 @@ export const getStatistics = async (req, res, next) => {
       prices.push(trade.price);
     }
 
+
+    const user = await UserModel.findOne({where: {id: req.user.id }});
+    
     const response = {
       lastPrice: lastTrade ? lastTrade.price : 0,
       btcVolume: btcVolume.toFixed(4),
       usdVolume: usdVolume.toFixed(2),
       high: prices.length ? Math.max(...prices) : 0,
       low: prices.length ? Math.min(...prices) : 0,
+      user_usd_balance: user.usd_balance,
+      user_btc_balance: user.btc_balance
     };
 
     return res.json(response);

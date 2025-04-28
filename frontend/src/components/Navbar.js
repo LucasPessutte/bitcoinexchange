@@ -20,6 +20,9 @@ function Navbar() {
           <Link to="/new-order" className="btn btn-outline-light me-2">
             Nova Ordem
           </Link>
+          <Link className="btn btn-outline-light me-2" to="/active-orders">
+            My Active Orders
+          </Link>
           <button className="btn btn-outline-danger" onClick={handleLogout}>
             Logout
           </button>

@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "worker": "node src/workers/matchingWorker.js",
+    "worker:dev": "nodemon src/workers/matchingWorker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
