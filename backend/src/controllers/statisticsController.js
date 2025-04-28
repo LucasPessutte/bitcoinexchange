@@ -4,18 +4,18 @@ import db from '../models/index.js';
 const TradeModel = db.Trade;
 const UserModel = db.User;
 
-// Função para buscar estatísticas
+// Function to fetch statistics
 export const getStatistics = async (req, res, next) => {
   try {
     const now = new Date();
     const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
 
-    // Último preço
+    // Last price
     const lastTrade = await TradeModel.findOne({
       order: [['createdAt', 'DESC']],
     });
 
-    // Volume BTC e USD nas últimas 24h
+    // BTC and USD volume in the last 24h
     const tradesLast24h = await TradeModel.findAll({
       where: {
         createdAt: {

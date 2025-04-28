@@ -1,7 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 function Navbar() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUsername(parsedUser.username);
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -12,11 +22,11 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        {/* Nome da plataforma como link */}
+        {/* Platform Name */}
         <Link className="navbar-brand" to="/dashboard">Bitcoin Exchange</Link>
 
-        {/* Botões do lado direito */}
-        <div className="d-flex ms-auto">
+        {/* Buttons rigth */}
+        <div className="d-flex align-items-center ms-auto">
           <Link to="/new-order" className="btn btn-outline-light me-2">
             Nova Ordem
           </Link>
@@ -30,9 +40,17 @@ function Navbar() {
             Order Book
           </Link>
 
-          <button className="btn btn-outline-danger" onClick={handleLogout}>
+          {/* button logout */}
+          <button className="btn btn-outline-danger me-2" onClick={handleLogout}>
             Logout
           </button>
+
+            {/* User name */}
+            {username && (
+            <span className="navbar-text text-light">
+              Usuário: {username}
+            </span>
+          )}
         </div>
       </div>
     </nav>

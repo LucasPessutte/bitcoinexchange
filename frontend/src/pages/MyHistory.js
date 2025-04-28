@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/api.js';
+import socket from '../services/socket.js';
 
 function MyHistory() {
   const [trades, setTrades] = useState([]);
@@ -18,6 +19,12 @@ function MyHistory() {
 
   useEffect(() => {
     fetchMyTrades();
+    socket.on('statisticsUpdated', () => {
+      fetchMyTrades();
+    });
+    return () => {
+      socket.off('statsUpdated');
+    };
   }, []);
 
   if (loading) {
