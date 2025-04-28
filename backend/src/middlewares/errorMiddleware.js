@@ -13,7 +13,7 @@ export function notFound(req, res, next) {
     res.status(statusCode).json({
       success: false,
       message,
-      error: process.env.NODE_ENV === 'production' ? undefined : err.stack
+      error: err.stack
     });
   }
   

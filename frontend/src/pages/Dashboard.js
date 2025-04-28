@@ -107,7 +107,7 @@ function Dashboard() {
             <div className="card-header">Your Balances</div>
             <div className="card-body">
               <h5 className="card-title">
-                {statistics ? `USD: $${statistics.user_usd_balance} | BTC: ${statistics.user_btc_balance} BTC` : 'Loading...'}
+                {statistics ? `USD: $${parseFloat(statistics.user_usd_balance).toFixed(2)} | BTC: ${parseFloat(statistics.user_btc_balance).toFixed(2)} BTC` : 'Loading...'}
               </h5>
             </div>
           </div>

@@ -43,9 +43,14 @@ export const getStatistics = async (req, res, next) => {
       usdVolume: usdVolume.toFixed(2),
       high: prices.length ? Math.max(...prices) : 0,
       low: prices.length ? Math.min(...prices) : 0,
-      user_usd_balance: user.usd_balance,
-      user_btc_balance: user.btc_balance
+      user_usd_balance: 0,
+      user_btc_balance: 0
     };
+
+    if(user){
+      response.user_btc_balance = user.btc_balance
+      response.user_usd_balance = user.usd_balance
+    }
 
     return res.json(response);
   } catch (error) {
