@@ -1,11 +1,12 @@
 import { createClient } from 'redis';
-import config from './config.js';
 
-const redis = createClient({
-  url: config.endpoints.redis,
-});
+const redisClient = createClient({ url: 'redis://platform_redis:6379' });
+const redisSubscriber = redisClient.duplicate(); // conexão separada para subscribe
 
-redis.on('error', (err) => console.error('Redis Client Error', err));
+redisClient.on('error', (err) => console.error('Redis (client) error:', err));
+redisSubscriber.on('error', (err) => console.error('Redis (subscriber) error:', err));
 
-await redis.connect(); 
-export default redis;
+await redisClient.connect();
+await redisSubscriber.connect();
+
+export { redisClient, redisSubscriber };

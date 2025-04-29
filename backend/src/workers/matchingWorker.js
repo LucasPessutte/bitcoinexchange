@@ -2,23 +2,28 @@ import { getNextOrderFromQueue } from '../services/queueService.js';
 import sequelize from '../config/database.js';
 import db from '../models/index.js';
 import { Op } from 'sequelize';
-import { getSocket } from '../services/socket.js';
+import {redisClient} from '../config/redis.js'; 
 
 const UserModel = db.User;
 const OrderModel = db.Order;
 const TradeModel = db.Trade;
 
-export async function processOrder(orderData) {
-  const t = await sequelize.transaction();
 
+export async function processOrder(orderData) {
+  const lockKey = `lock:order:${orderData.id}`;
+  const lockAcquired = await redisClient.set(lockKey, 'locked', { NX: true, EX: 10 });
+
+  if (!lockAcquired) {
+    console.log(`⚠️ Ordem ${orderData.id} já está sendo processada por outro worker.`);
+    return;
+  }
+
+  const t = await sequelize.transaction();
   try {
     const { id, user_id, type, price, amount } = orderData;
-    const io = getSocket();
 
     const taker = await UserModel.findByPk(user_id, { transaction: t });
-    if (!taker) {
-      throw new Error('Usuário não encontrado');
-    }
+    if (!taker) throw new Error('Usuário não encontrado');
 
     const oppositeType = type === 'buy' ? 'sell' : 'buy';
     const matchingOrders = await OrderModel.findAll({
@@ -30,8 +35,8 @@ export async function processOrder(orderData) {
       },
       order: [['price', type === 'buy' ? 'asc' : 'desc']],
       transaction: t,
+      lock: t.LOCK.UPDATE // 👈 trava os registros
     });
-
 
     let remainingAmount = amount;
 
@@ -40,37 +45,25 @@ export async function processOrder(orderData) {
 
       const matchAmount = Math.min(remainingAmount, match.amount);
       const executionPrice = match.price;
-
       const maker = await UserModel.findByPk(match.user_id, { transaction: t });
-      if (!maker) {
-        throw new Error('Usuário maker não encontrado');
-      }
+      if (!maker) throw new Error('Usuário maker não encontrado');
 
       const usdCost = matchAmount * executionPrice;
       const takerFee = usdCost * 0.003;
       const makerFee = usdCost * 0.005;
 
       if (type === 'buy') {
-        if (taker.usd_balance < usdCost + takerFee) {
-          throw new Error('Saldo USD insuficiente para compra');
-        }
-
+        if (taker.usd_balance < usdCost + takerFee) throw new Error('Saldo USD insuficiente');
         taker.usd_balance -= (usdCost + takerFee);
         taker.btc_balance += matchAmount;
-
         maker.btc_balance -= matchAmount;
         maker.usd_balance += (usdCost - makerFee);
-
-      } else { // type === 'sell'
-        if (taker.btc_balance < matchAmount) {
-          throw new Error('Saldo BTC insuficiente para venda');
-        }
-
+      } else {
+        if (taker.btc_balance < matchAmount) throw new Error('Saldo BTC insuficiente');
         taker.btc_balance -= matchAmount;
         taker.usd_balance += (usdCost - takerFee);
-
-        maker.usd_balance -= (usdCost + makerFee);
         maker.btc_balance += matchAmount;
+        maker.usd_balance -= usdCost;
       }
 
       await taker.save({ transaction: t });
@@ -79,8 +72,8 @@ export async function processOrder(orderData) {
       await TradeModel.create({
         buyer_id: type === 'buy' ? taker.id : maker.id,
         seller_id: type === 'buy' ? maker.id : taker.id,
-        price: match.price,
-        amount: matchAmount,
+        price: executionPrice,
+        amount: matchAmount
       }, { transaction: t });
 
       match.amount -= matchAmount;
@@ -88,13 +81,10 @@ export async function processOrder(orderData) {
       await match.save({ transaction: t });
 
       remainingAmount -= matchAmount;
-
     }
 
     const originalOrder = await OrderModel.findByPk(id, { transaction: t });
-    if (!originalOrder) {
-      throw new Error('Ordem original não encontrada');
-    }
+    if (!originalOrder) throw new Error('Ordem original não encontrada');
 
     if (remainingAmount > 0) {
       originalOrder.amount = remainingAmount;
@@ -107,13 +97,16 @@ export async function processOrder(orderData) {
     await originalOrder.save({ transaction: t });
 
     await t.commit();
-    io.emit('statisticsUpdated');
     console.log(`✅ Ordem ${id} processada com sucesso.`);
+    await redisClient.publish('channel:updates', 'statisticsUpdated');
   } catch (error) {
     console.error('Erro ao processar ordem:', error);
     await t.rollback();
+  } finally {
+    await redisClient.del(lockKey);
   }
 }
+
 
 // Loop infinito para consumir a fila
 export async function startMatchingWorker() {

@@ -1,23 +1,25 @@
-// src/server.js
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import sequelize from './config/database.js';
-import redis from './config/redis.js';
 import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import statisticsRoutes from './routes/statisticsRoutes.js';
 import tradeRoutes from './routes/tradeRoutes.js';
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js';
 import { initSocket } from './services/socket.js';
-import {startMatchingWorker} from './workers/matchingWorker.js';
 import config from './config/config.js';
+import {redisSubscriber} from './config/redis.js';
 
 const app = express();
 const server = createServer(app);
 const io = initSocket(server); 
 
-startMatchingWorker();
+redisSubscriber.subscribe('channel:updates', (message) => {
+  if (message === 'statisticsUpdated') {
+    io.emit('statisticsUpdated');
+  }
+});
 
 // Middlewares Express
 app.use(cors());

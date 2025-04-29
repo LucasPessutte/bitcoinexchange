@@ -1,10 +1,10 @@
-import redis from '../config/redis.js';
+import {redisClient} from '../config/redis.js';
 
 const ORDER_QUEUE_KEY = 'order-queue';
 
 export const addOrderToQueue = async (order) => {
   try {
-    await redis.rPush(ORDER_QUEUE_KEY, JSON.stringify({
+    await redisClient.rPush(ORDER_QUEUE_KEY, JSON.stringify({
       id: order.id,
       user_id: order.user_id,
       type: order.type,
@@ -21,7 +21,7 @@ export const addOrderToQueue = async (order) => {
 
 export const getNextOrderFromQueue = async () => {
   try {
-    const data = await redis.lPop(ORDER_QUEUE_KEY);
+    const data = await redisClient.lPop(ORDER_QUEUE_KEY);
     if (data) {
       return JSON.parse(data);
     }

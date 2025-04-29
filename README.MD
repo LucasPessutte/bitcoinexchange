@@ -57,6 +57,11 @@ The backend of the web application will run on the port 80
 
 http://localhost:3001
 
+# Starting the worker
+Open a new tab on the terminal and run the command below:
+
+docker exec -it platform_backend bash -c "cd /platform_backend && npm run worker"
+
 # Starting the frontend
 Open a new tab on the terminal and run the command below:
 
