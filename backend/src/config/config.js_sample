@@ -17,6 +17,11 @@ const config = {
     dialect: 'postgres'
   },
 
+  jwt_config: {
+    secret: 'supersecretjwtkey',
+    expiresIn: '7d',
+  },
+
   endpoints: {
     backend: 'http://localhost/',
     redis: 'redis://platform_redis:6379'

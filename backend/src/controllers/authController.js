@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import authConfig from '../config/auth.js';
+import config from '../config/config.js';
 import db from '../models/index.js';
 
 const UserModel = db.User;
@@ -7,8 +7,8 @@ const UserModel = db.User;
 function generateToken(user) {
   return jwt.sign(
     { id: user.id, username: user.username },
-    authConfig.secret,
-    { expiresIn: authConfig.expiresIn }
+    config.jwt_config.secret,
+    { expiresIn: config.jwt_config.expiresIn }
   );
 }
 
